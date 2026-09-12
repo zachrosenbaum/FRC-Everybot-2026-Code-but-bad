@@ -16,8 +16,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /** Creates a new CANBallSubsystem. */
   public ClimberSubsystem() {
-    // create brushed motors for each of the motors on the launcher mechanism
-    climberMotor = new SparkMax(CLIMBER_MOTOR_ID, MotorType.kBrushed);
+    // create brushless motors for each of the motors on the launcher mechanism
+    climberMotor = new SparkMax(CLIMBER_MOTOR_ID, MotorType.kBrushless);
 
     // create the configuration for the climb moter, set a current limit and apply
     // the config to the controller
@@ -35,7 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
   // A method to stop the climber
   public void stop() {
     climberMotor.set(0);
-  }
+  } 
 
   @Override
   public void periodic() {

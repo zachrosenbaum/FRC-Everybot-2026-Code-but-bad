@@ -80,7 +80,7 @@ public class RobotContainer {
     driverController.a().whileTrue(new Eject(fuelSubsystem));
    // While the down arrow on the directional pad is held it will unclimb the robot
     driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
-    // While the up arrow on the directional pad is held it will cimb the robot
+    // While the up arrow on the directional pad is held it will climb the robot
     driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
 
     // Set the default command for the drive subsystem to the command provided by
