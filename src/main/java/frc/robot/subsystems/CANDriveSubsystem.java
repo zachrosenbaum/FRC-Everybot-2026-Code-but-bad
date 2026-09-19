@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,8 +12,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+
 import static frc.robot.Constants.DriveConstants.*;
 
 public class CANDriveSubsystem extends SubsystemBase {
@@ -21,14 +26,21 @@ public class CANDriveSubsystem extends SubsystemBase {
   private final SparkMax rightLeader;
   private final SparkMax rightFollower;
 
+  private final RelativeEncoder m_leftLeaderEncoder;
+  private final RelativeEncoder m_rightLeaderEncoder;
+
   private final DifferentialDrive drive;
+
 
   public CANDriveSubsystem() {
     // create brushless motors for drive
-    leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
-    leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
-    rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless); // CAN ID 2
+    leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless); // CAN ID 4
+    rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless); // CAN ID 7
+    rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless); // CAN ID 1
+
+    m_leftLeaderEncoder = leftFollower.getEncoder();
+    m_rightLeaderEncoder = rightFollower.getEncoder();
 
     // set up differential drive class
     drive = new DifferentialDrive(leftLeader, rightLeader);
@@ -69,11 +81,22 @@ public class CANDriveSubsystem extends SubsystemBase {
     leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  public double getLeftVelocity(){
+    return m_leftLeaderEncoder.getVelocity();
+  }
+
+  public double getRightVelocity(){
+    return m_rightLeaderEncoder.getVelocity();
+  }
+
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("leftLeader speed", leftLeader.get());
+    SmartDashboard.putNumber("rightLeader speed", rightLeader.get());
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
+    
     drive.arcadeDrive(xSpeed, zRotation);
   }
 
